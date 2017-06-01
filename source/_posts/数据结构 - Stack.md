@@ -22,27 +22,27 @@ class Stack {
   constructor () {
     this.items = []
   }
-  
+
   push (element) {
     this.items.push(element)
   }
-  
+
   pop () {
     return this.items.pop(element)
   }
-  
+
   peek () {
     return this.items[this.items.length - 1]
   }
-  
+
   isEmpty () {
     return this.items.length === 0
   }
-  
+
   clear () {
     this.items = []
   }
-  
+
   size () {
     return this.items.length
   }
@@ -59,7 +59,7 @@ const divideBy2 = decNum => {
   let num = parseInt(decNum)
   let rem = 0
   let result = ''
-  
+
   while (num > 0) {
     rem = num % 2
     stack.push(rem)
@@ -80,4 +80,3 @@ divideBy2(1111.11) // "10001010111"
 ## BTW
 
 值得一提的是，栈不仅仅是一种数据结构中的术语，在计算机原理中，也是一种内存存储数据的内存区域的术语名词，如果感兴趣可以看看 [阮老师的 Stack 的三种含义](http://www.ruanyifeng.com/blog/2013/11/stack.html) 。
-
