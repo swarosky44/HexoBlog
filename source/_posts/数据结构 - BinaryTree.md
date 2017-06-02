@@ -10,7 +10,7 @@ categories: 数据结构
 <!-- more -->
 
 ## 定义
-二叉树（Binnary Tree）是每个节点不能拥有超过两个子节点的树结构。
+二叉查找树（Binnary Tree）是每个节点不能拥有超过两个子节点的树结构。
 
 树结构的定义可以在 [维基百科](https://zh.wikipedia.org/wiki/%E6%A8%B9%E7%8B%80%E7%B5%90%E6%A7%8B) 了解一下。
 
