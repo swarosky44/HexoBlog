@@ -1,6 +1,6 @@
 ---
 title: 数据结构 - Binnary Tree
-date: 2017-06-01 15：05
+date: 2017-06-02 15：05
 tags: ['数据结构', 'JavaScript']
 categories: 数据结构
 ---
