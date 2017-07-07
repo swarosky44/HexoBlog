@@ -116,6 +116,28 @@ function reactiveGetter () {
 BTW:
 - Dep.target 在 flow 的限制下，只能是 Watcher 类的实例。
 
+```javascript
+function reactiveSetter (newVal) {
+  const value = getter ? getter.call(obj) : val
+  /* eslint-disable no-self-compare */
+  if (newVal === value || (newVal !== newVal && value !== value)) {
+    return
+  }
+  /* eslint-enable no-self-compare */
+  if (process.env.NODE_ENV !== 'production' && customSetter) {
+    customSetter()
+  }
+  if (setter) {
+    setter.call(obj, newVal)
+  } else {
+    val = newVal
+  }
+  childOb = observe(newVal)
+  dep.notify()
+}
+```
+这里 setter 比较简单，如果有新值就对新值进行 observe 的改造，然后触发通知所有已经被收集的观察者。
+
 ## observe
 ```javascript
 export function observe (value: any, asRootData: ?boolean): Observer | void {
@@ -127,7 +149,7 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
 ```
 `value` 必须是对象才能完成 observe；
 
-```
+```javascript
 let ob: Observer | void
 if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
   ob = value.__ob__
@@ -143,7 +165,7 @@ if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
 ```
 这里我们创建了一个 ob 变量，用于存储 value 的被观察 (Observer) 的实例。如果 value 上已经存在了 __ob__ 属性，则意味着该属性已经被改造为被观察者了。
 
-```
+```javascript
 if (asRootData && ob) {
   ob.vmCount++
 }
