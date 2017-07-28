@@ -1,5 +1,5 @@
 ---
-title: Vue - 模板计算过程(一)
+title: Vue - 模板计算过程
 date: 2017-07-14 14：30
 tags:
   - Vue
@@ -42,6 +42,20 @@ Vue.prototype.$mount = function (
 ```
 这里简单说一下 hydrating 这参数，我们是不需要太关心的，因为这是 vue-ssr 渲染时才会用上，所以之后我们都会忽略这个参数。
 这里我们发现 $mount 只是一层装饰，核心在于 `mountComponent` 这个函数的执行。
+
+在 platforms/web/entry-runtime-with-compiler.js 中会进行一层装饰
+```JavaScript
+const mount = Vue.prototype.$mount
+Vue.prototype.$mount = function (
+  el?: string | Element,
+  hydrating?: boolean
+): Component {
+  // Compile TODO
+  return mount.call(this, el, hydrating)
+}
+```
+这里省略的代码就是整个模板从计算 -> 渲染 -> 挂载中的第一步：计算。
+这里将一个 render Function 的字符串形式准备好，存储到 vm._render 中，等待模板的下一步处理过程。
 
 ### mountComponent
 
@@ -88,7 +102,7 @@ vm._watcher = new Watcher(vm, updateComponent, noop)
 
 而 updateComponent 函数的定义也有几个地方需要了解一下：
   - vnode 参数的准备来自于 `Vue.prototype._render`，用于将模板的 DOM 转换成 vnode 对象。
-  - `vm._update` 就是继续向下承接的函数，会在那里面完成模板计算和最终的渲染（这一层层的函数包裹，哇，看得我头皮发麻 🙄 ）。
+  - `vm._update` 就是继续向下承接的函数，会在那里面完成最终的渲染（这一层层的函数包裹，哇，看得我头皮发麻 🙄 ）。
 
 ### update
 
@@ -142,7 +156,7 @@ export const patch: Function = createPatchFunction({ nodeOps, modules })
 就是这里的两个参数，nodeOps 和 modules。
 
 - nodeOps 是一组 DOM 操作方法的集合；
-- modules 是一组指令解析方法的集合；
+- modules 是一组指令生命周期的方法的集合；
 
 ### nodeOps
 在 /platforms/web/runtime/node-ops.js 文件中，我们可以看到大量 DOM 操作方法，这里就是一个工具类，在 patch 函数计算模板的过程中，会经常用到这些工具。
@@ -179,6 +193,5 @@ modules = [
 
 所以做了个脑图，抽离掉一些不那么重要的函数包裹，看一下代码核心逻辑是怎么流动的。
 
-![](http://7xro5v.com1.z0.glb.clouddn.com/vue%20patch%20%E6%A8%A1%E6%9D%BF%E8%AE%A1%E7%AE%97%E6%B5%81%E7%A8%8B%E5%9B%BE%20%281%29.png)
-
+![](http://7xro5v.com1.z0.glb.clouddn.com/vue%20patch%20%E6%A8%A1%E6%9D%BF%E8%AE%A1%E7%AE%97%E6%B5%81%E7%A8%8B%E5%9B%BE.png)
 就先这样吧，之后再写 `function patch` 里面的逻辑吧。😶
